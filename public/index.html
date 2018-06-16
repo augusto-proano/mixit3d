@@ -57,9 +57,9 @@
 <script>
   if (!Detector.webgl) Detector.addGetWebGLMessage();
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0xff0000 );
+  
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
-  camera.position.set(0, 200, 400);
+  camera.position.set(0, 400, 400);
 
   console.log("CAMERA", camera)
 
@@ -169,6 +169,11 @@
   }
   let textureLoader = new THREE.TextureLoader(manager)
   let texture = textureLoader.load('obj/texture.jpg')
+
+  let textureScene = textureLoader.load('obj/space.jpg'); 
+
+  scene.background = textureScene;
+
   // model
   let onProgress = function (xhr) {
     if (xhr.lengthComputable) {
