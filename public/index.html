@@ -79,6 +79,70 @@
   controls.maxDistance = 1500
 
 
+  // LIGTHS
+
+  // let ambientLight = new THREE.AmbientLight(0xcccccc, 0.1)
+  // scene.add(ambientLight)
+  let pointLight = new THREE.PointLight(0xffffff, 0.8)
+  camera.add(pointLight)
+  scene.add(camera)
+
+  var drumsLight = new THREE.SpotLight(0xff0000, 0, 100, 3, 0, 0.5);
+  drumsLight.position.set(0, 100, 0);
+  drumsLight.castShadow = true;
+  drumsLight.shadow.mapSize.width = 1024;
+  drumsLight.shadow.mapSize.height = 1024;
+  drumsLight.shadow.camera.near = 500;
+  drumsLight.shadow.camera.far = 4000;
+  drumsLight.shadow.camera.fov = 30;
+  console.log("DRUMSLIGHT", drumsLight);
+  scene.add(drumsLight);
+
+  var guitarLight = new THREE.SpotLight(0x00ff00, 0, 85, 3, 0, 0.5);
+  guitarLight.position.set(86, 100, 78);
+  guitarLight.castShadow = true;
+  guitarLight.shadow.mapSize.width = 1024;
+  guitarLight.shadow.mapSize.height = 1024;
+  guitarLight.shadow.camera.near = 500;
+  guitarLight.shadow.camera.far = 4000;
+  guitarLight.shadow.camera.fov = 30;
+  console.log("GUITARLIGHTS", guitarLight);
+  scene.add(guitarLight);
+
+  var bassLight = new THREE.SpotLight(0x00ffff, 0, 50, 3, 0, 0.5);
+  bassLight.position.set(0, 52, 86);
+  bassLight.castShadow = true;
+  bassLight.shadow.mapSize.width = 1024;
+  bassLight.shadow.mapSize.height = 1024;
+  bassLight.shadow.camera.near = 500;
+  bassLight.shadow.camera.far = 4000;
+  bassLight.shadow.camera.fov = 30;
+  console.log(bassLight);
+  scene.add("BASSLIGHT", bassLight);
+
+  var pianoLight = new THREE.SpotLight(0xffff00, 0, 77, 3, 0, 0.5);
+  pianoLight.position.set(-75, 90, 90);
+  pianoLight.castShadow = true;
+  pianoLight.shadow.mapSize.width = 1024;
+  pianoLight.shadow.mapSize.height = 1024;
+  pianoLight.shadow.camera.near = 500;
+  pianoLight.shadow.camera.far = 4000;
+  pianoLight.shadow.camera.fov = 30;
+  console.log("PIANOLIGHTS", pianoLight);
+  scene.add(pianoLight);
+
+  var micLight = new THREE.SpotLight(0xffffff, 0, 52, 3, 0, 0.5);
+  micLight.position.set(10, 70, 130);
+  micLight.castShadow = true;
+  micLight.shadow.mapSize.width = 1024;
+  micLight.shadow.mapSize.height = 1024;
+  micLight.shadow.camera.near = 500;
+  micLight.shadow.camera.far = 4000;
+  micLight.shadow.camera.fov = 30;
+  console.log("MICLIGHT", micLight);
+  scene.add(micLight);
+
+
   //automatic resizes of the window
   window.addEventListener('resize', () => {
     const width = window.innerWidth;
@@ -166,8 +230,9 @@
 
   //ON CLICK EVENTS
   let onPiano = false;
-  let audioPiano = new Audio('sounds/piano128bpm7s.wav')
+  let audioPiano = new Audio('sounds/piano2128bpm7s.wav')
   audioPiano.play()
+  audioPiano.volume = 0.15;
   audioPiano.loop = true;
   audioPiano.muted = true;
   audioPiano.playbackRate = 1;
@@ -176,10 +241,12 @@
   domEvents.addEventListener(piano, 'click', event => {
     if (!onPiano) {
       audioPiano.muted = false;
+      pianoLight.intensity = 2.5;
       onPiano = true
     }
     else {
       audioPiano.muted = true;
+      pianoLight.intensity = 0;
       onPiano = false;
     }
   })
@@ -192,11 +259,13 @@
   audioDrums.playbackRate = 1;
   domEvents.addEventListener(drums, 'click', event => {
     if (!onDrums) {
-      audioDrums.muted = false
+      audioDrums.muted = false;
+      drumsLight.intensity = 2.5;
       onDrums = true
     }
     else {
-      audioDrums.muted = true
+      audioDrums.muted = true;
+      drumsLight.intensity = 0;
       onDrums = false;
     }
   })
@@ -210,10 +279,12 @@
   domEvents.addEventListener(guitar, 'click', event => {
     if (!onGuitar) {
       audioGuitar.muted = false
+      guitarLight.intensity = 2;
       onGuitar = true
     }
     else {
       audioGuitar.muted = true
+      guitarLight.intensity = 0;
       onGuitar = false;
     }
   })
@@ -227,10 +298,12 @@
   domEvents.addEventListener(bass, 'click', event => {
     if (!onBass) {
       audioBass.muted = false;
+      bassLight.intensity = 2.5;
       onBass = true
     }
     else {
       audioBass.muted = true;
+      bassLight.intensity = 0;
       onBass = false;
     }
   })
@@ -244,77 +317,16 @@
   console.log("MIC AUDIO", audioMic)
   domEvents.addEventListener(mic, 'click', event => {
     if (!onMic) {
-      audioMic.muted = false
-      onMic = true
+      audioMic.muted = false;
+      micLight.intensity = 3.5;
+      onMic = true;
     }
     else {
       audioMic.muted = true;
+      micLight.intensity = 0;
       onMic = false;
     }
   })
-
-  // LIGTHS
-
-  // let ambientLight = new THREE.AmbientLight(0xcccccc, 0.1)
-  // scene.add(ambientLight)
-  let pointLight = new THREE.PointLight(0xffffff, 0.8)
-  camera.add(pointLight)
-  scene.add(camera)
-
-  var drumsLight = new THREE.SpotLight(0xff0000, 2, 100, 3, 0, 0.5);
-  drumsLight.position.set(0, 100, 0);
-  drumsLight.castShadow = true;
-  drumsLight.shadow.mapSize.width = 1024;
-  drumsLight.shadow.mapSize.height = 1024;
-  drumsLight.shadow.camera.near = 500;
-  drumsLight.shadow.camera.far = 4000;
-  drumsLight.shadow.camera.fov = 30;
-  console.log("DRUMSLIGHT", drumsLight);
-  scene.add(drumsLight);
-
-  var guitarLight = new THREE.SpotLight(0x00ff00, 2.50, 85, 3, 0, 0.5);
-  guitarLight.position.set(86, 100, 78);
-  guitarLight.castShadow = true;
-  guitarLight.shadow.mapSize.width = 1024;
-  guitarLight.shadow.mapSize.height = 1024;
-  guitarLight.shadow.camera.near = 500;
-  guitarLight.shadow.camera.far = 4000;
-  guitarLight.shadow.camera.fov = 30;
-  console.log("GUITARLIGHTS", guitarLight);
-  scene.add(guitarLight);
-
-  var bassLight = new THREE.SpotLight(0x00ffff, 2.50, 50, 3, 0, 0.5);
-  bassLight.position.set(0, 52, 86);
-  bassLight.castShadow = true;
-  bassLight.shadow.mapSize.width = 1024;
-  bassLight.shadow.mapSize.height = 1024;
-  bassLight.shadow.camera.near = 500;
-  bassLight.shadow.camera.far = 4000;
-  bassLight.shadow.camera.fov = 30;
-  console.log(bassLight);
-  scene.add("BASSLIGHT", bassLight);
-
-  var pianoLight = new THREE.SpotLight(0xffff00, 2, 77, 3, 0, 0.5);
-  pianoLight.position.set(-75, 90, 90);
-  pianoLight.castShadow = true;
-  pianoLight.shadow.mapSize.width = 1024;
-  pianoLight.shadow.mapSize.height = 1024;
-  pianoLight.shadow.camera.near = 500;
-  pianoLight.shadow.camera.far = 4000;
-  pianoLight.shadow.camera.fov = 30;
-  console.log("PIANOLIGHTS", pianoLight);
-  scene.add(pianoLight);
-
-  var micLight = new THREE.SpotLight(0xffffff, 3.5, 52, 3, 0, 0.5);
-  micLight.position.set(10, 70, 130);
-  micLight.castShadow = true;
-  micLight.shadow.mapSize.width = 1024;
-  micLight.shadow.mapSize.height = 1024;
-  micLight.shadow.camera.near = 500;
-  micLight.shadow.camera.far = 4000;
-  micLight.shadow.camera.fov = 30;
-  console.log("MICLIGHT", micLight);
-  scene.add(micLight);
 
   const animate = function () {
     requestAnimationFrame(animate);
