@@ -61,7 +61,7 @@
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
-  camera.position.set(0, 400, 400);
+  camera.position.set(0, 600, 1000);
   console.log("CAMERA", camera)
 
   const renderer = new THREE.WebGLRenderer();
@@ -85,6 +85,14 @@
     map: new THREE.CanvasTexture(generateSprite()),
     blending: THREE.AdditiveBlending
   });
+
+  //**********************************************************************
+  //  AUDIO VISUALIZER TRY
+  //**********************************************************************
+
+  
+
+  //***********************************************************************
 
   function generateSprite() {
     var canvas = document.createElement('canvas');
@@ -145,7 +153,7 @@
 
   // LIGTHS
 
-  // let ambientLight = new THREE.AmbientLight(0xffffff, 0.1)
+  // let ambientLight = new THREE.AmbientLight(0xffffff, 0.)
   // scene.add(ambientLight)
   let pointLight = new THREE.PointLight(0xffffff, 0.8)
   camera.add(pointLight)
@@ -231,12 +239,13 @@
     console.log(item, loaded, total)
   }
   let textureLoader = new THREE.TextureLoader(manager)
-  // let texture = textureLoader.load('obj/texture3.jpg')  
-  let texture = textureLoader.load('obj/stage7.png')
+
+  //white stage with color lights
+  let texture = textureLoader.load('obj/stage4.png')
 
   let textureScene = textureLoader.load('obj/space.jpg');
 
-  let textureName = textureLoader.load('obj/name.png');
+  let textureName = textureLoader.load('obj/name.jpg');
 
   scene.background = textureScene;
 
@@ -273,7 +282,7 @@
     function (object) {
       object.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
-          child.material.map = texture
+          child.material.map = textureName
         }
       })
       console.log("NAME", object)
@@ -371,6 +380,7 @@
   scene.add(mic);
   console.log("MIC", mic);
 
+
   //ON CLICK EVENTS
   let onPiano = false;
   let audioPiano = new Audio('sounds/piano2128bpm7s.wav')
@@ -380,11 +390,13 @@
   audioPiano.playbackRate = 1;
   console.log("PIANO AUDIO", audioPiano)
 
+  audioPiano.muted = false;
+
   domEvents.addEventListener(piano, 'click', event => {
     if (!onPiano) {
       startSounds()
       audioPiano.muted = false;
-      pianoLight.intensity = 3;
+      pianoLight.intensity = 2.5;
       onPiano = true
     }
     else {
@@ -393,6 +405,14 @@
       onPiano = false;
     }
   })
+
+  let introPlayed = false;
+  let welcomeIntro = new Audio('sounds/welcomeIntro.wav')
+  if (!introPlayed) {
+    welcomeIntro.play();
+    introPlayed = true;
+  }
+
 
   let onDrums = false;
   let audioDrums = new Audio('sounds/drum128bpm7s.wav')
@@ -403,12 +423,12 @@
     if (!onDrums) {
       startSounds()
       audioDrums.muted = false;
-      drumsLight.intensity = 4;
+      drumsLight.intensity = 2.5;
       onDrums = true
     }
     else {
       audioDrums.muted = true;
-      drumsLight.intensity = 1;
+      drumsLight.intensity = 0;
       onDrums = false;
     }
   })
@@ -422,7 +442,7 @@
     if (!onGuitar) {
       startSounds()
       audioGuitar.muted = false
-      guitarLight.intensity = 3;
+      guitarLight.intensity = 2.5;
       onGuitar = true
     }
     else {
@@ -441,7 +461,7 @@
     if (!onBass) {
       startSounds()
       audioBass.muted = false;
-      bassLight.intensity = 5;
+      bassLight.intensity = 2.5;
       onBass = true
     }
     else {
@@ -461,7 +481,7 @@
     if (!onMic) {
       startSounds()
       audioMic.muted = false;
-      micLight.intensity = 4;
+      micLight.intensity = 2.5;
       onMic = true;
     }
     else {
@@ -488,6 +508,8 @@
       console.log("SOUNDS STARTED")
     }
   }
+
+  //
 
   const animate = function () {
     requestAnimationFrame(animate);
