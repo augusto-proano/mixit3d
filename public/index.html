@@ -80,6 +80,7 @@
   controls.minDistance = 1;
   controls.maxDistance = 1500
 
+  // PARTICLES  
   var material = new THREE.SpriteMaterial({
     map: new THREE.CanvasTexture(generateSprite()),
     blending: THREE.AdditiveBlending
@@ -111,7 +112,7 @@
   function initParticle(particle, delay) {
     var particle = this instanceof THREE.Sprite ? this : particle;
     var delay = delay !== undefined ? delay : 0;
-    particle.position.set(0, 0, 0);
+    particle.position.set(0, 100, 500);
     particle.scale.x = particle.scale.y = Math.random() * 8 + 4;
     new TWEEN.Tween(particle)
       .delay(delay)
@@ -135,6 +136,21 @@
   document.body.appendChild(stats.dom);
 
 
+  // Earth
+  group = new THREE.Group();
+  scene.add(group);
+  console.log("EARTH", group)
+  // earth
+  var earthLoader = new THREE.TextureLoader();
+  earthLoader.load('obj/land_ocean_ice_cloud_2048.jpg', function (texture) {
+    var geometry = new THREE.SphereGeometry(200, 20, 20);
+    var material = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
+    var mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+  });
+  group.position.set(700, -250, -750)
+  group.scale.set(1.2, 1.2, 1.2)
+
   // LIGTHS
 
   // let ambientLight = new THREE.AmbientLight(0xffffff, 0.)
@@ -143,7 +159,7 @@
   camera.add(pointLight)
   scene.add(camera)
 
-  var drumsLight = new THREE.SpotLight(0xff0000, 0, 100, 3, 0, 0.5);
+  var drumsLight = new THREE.SpotLight(0x9718ce, 1, 100, 3, 0, 0.5);
   drumsLight.position.set(0, 100, 0);
   drumsLight.castShadow = true;
   drumsLight.shadow.mapSize.width = 1024;
@@ -154,7 +170,7 @@
   console.log("DRUMSLIGHT", drumsLight);
   scene.add(drumsLight);
 
-  var guitarLight = new THREE.SpotLight(0xff00ff, 0, 85, 3, 0, 0.5);
+  var guitarLight = new THREE.SpotLight(0xffffff, 0, 85, 3, 0, 0.5);
   guitarLight.position.set(86, 100, 78);
   guitarLight.castShadow = true;
   guitarLight.shadow.mapSize.width = 1024;
@@ -165,7 +181,7 @@
   console.log("GUITARLIGHTS", guitarLight);
   scene.add(guitarLight);
 
-  var bassLight = new THREE.SpotLight(0x00ff00, 0, 50, 3, 0, 0.5);
+  var bassLight = new THREE.SpotLight(0xffffff, 0, 50, 3, 0, 0.5);
   bassLight.position.set(0, 52, 86);
   bassLight.castShadow = true;
   bassLight.shadow.mapSize.width = 1024;
@@ -176,7 +192,7 @@
   console.log("BASSLIGHT", bassLight);
   scene.add(bassLight);
 
-  var pianoLight = new THREE.SpotLight(0x0000ff, 0, 77, 3, 0, 0.5);
+  var pianoLight = new THREE.SpotLight(0xffffff, 0, 77, 3, 0, 0.5);
   pianoLight.position.set(-75, 90, 90);
   pianoLight.castShadow = true;
   pianoLight.shadow.mapSize.width = 1024;
@@ -277,6 +293,49 @@
     onProgress,
     onError
   )
+
+  // EXTRA SOUNDS CONTROLERS
+  const xtraSoundsControlers = [];
+  for (let i = 0; i < 5; i++) {
+    let xsoundGeometry = new THREE.SphereGeometry(5, 5, 5);
+    let xsoundMaterial = new THREE.MeshNormalMaterial({ wireframe: true });
+    let xtraSound = new THREE.Mesh(xsoundGeometry, xsoundMaterial);
+    xtraSoundsControlers[i] = xtraSound
+    scene.add(xtraSoundsControlers[i]);
+  }
+
+  console.log("XTRASOUNDS", xtraSoundsControlers)
+ 
+  xtraSoundsControlers[0].position.set(-200, 150, -100)
+  xtraSoundsControlers[0].scale.set(3, 3, 3)
+
+  xtraSoundsControlers[1].position.set(-100, 200, -100)
+  xtraSoundsControlers[1].scale.set(5, 5, 5)
+
+  xtraSoundsControlers[2].position.set(0, 150, -100)
+  xtraSoundsControlers[2].scale.set(3, 3, 3)
+
+  xtraSoundsControlers[3].position.set(100, 200, -100)
+  xtraSoundsControlers[3].scale.set(5, 5, 5)
+
+  xtraSoundsControlers[4].position.set(200, 150, -100)
+  xtraSoundsControlers[4].scale.set(3, 3, 3)
+
+  //EXTRA SOUNDS
+  const xtraSoundsTracks = ['sounds/clap.wav', 'sounds/clap.wav', 'sounds/clap.wav', 'sounds/clap.wav', 'sounds/clap.wav', 'sounds/clap.wav', 'sounds/clap.wav', 'sounds/clap.wav']
+  const xtraSoundsArr = [];
+  for (let i = 0; i < 5; i++) {
+    let xtraSound = new Audio(xtraSoundsTracks[i])
+    xtraSoundsArr[i] = xtraSound
+    domEvents.addEventListener(xtraSoundsControlers[i], 'mouseover', event => {
+      xtraSoundsArr[i].play()
+      xtraSoundsArr[i].loop = false;
+    })
+    domEvents.addEventListener(xtraSoundsControlers[i], 'dblclick', event => {
+      xtraSoundsArr[i].play()
+      xtraSoundsArr[i].loop = true;
+    })
+  }
 
   //MUSIC CONTROLS
   let pianoGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -434,7 +493,6 @@
 
   let started = false;
   const startSounds = () => {
-
     if (!started) {
       started = true;
       audioMic.play()
@@ -458,9 +516,21 @@
     camera.position.x += (mouseX - camera.position.x) * .05;
     camera.position.y += (- mouseY - camera.position.y) * .05;
     camera.lookAt(scene.position);
+
+    //particles generation
     stats.update();
     TWEEN.update();
+
     renderer.render(scene, camera);
+
+    //earth rotation
+    group.rotation.y -= 0.004;
+
+    //xsounds rotation
+    for (let i = 0; i < 5; i++) {
+      xtraSoundsControlers[i].rotation.x += .01
+      xtraSoundsControlers[i].rotation.y += .01
+    }
   };
 
   animate();
