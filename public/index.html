@@ -80,52 +80,68 @@
   controls.minDistance = 1;
   controls.maxDistance = 1500
 
-  	var material = new THREE.SpriteMaterial( {
-					map: new THREE.CanvasTexture( generateSprite() ),
-					blending: THREE.AdditiveBlending
-				} );
+  // PARTICLES  
+  var material = new THREE.SpriteMaterial({
+    map: new THREE.CanvasTexture(generateSprite()),
+    blending: THREE.AdditiveBlending
+  });
 
-			function generateSprite() {
-				var canvas = document.createElement( 'canvas' );
-				canvas.width = 16;
-        canvas.height = 16;
-				var context = canvas.getContext( '2d' );
-				var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
-				gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
-				gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
-				gradient.addColorStop( 0.4, 'rgba(0,0,64,1)' );
-				gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
-				context.fillStyle = gradient;
-				context.fillRect( 0, 0, canvas.width, canvas.height );
-				return canvas;
-			}
+  function generateSprite() {
+    var canvas = document.createElement('canvas');
+    canvas.width = 16;
+    canvas.height = 16;
+    var context = canvas.getContext('2d');
+    var gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+    gradient.addColorStop(0, 'rgba(255,255,255,1)');
+    gradient.addColorStop(0.2, 'rgba(0,255,255,1)');
+    gradient.addColorStop(0.4, 'rgba(0,0,64,1)');
+    gradient.addColorStop(1, 'rgba(0,0,0,1)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    return canvas;
+  }
 
-      function initParticle( particle, delay ) {
-				var particle = this instanceof THREE.Sprite ? this : particle;
-				var delay = delay !== undefined ? delay : 0;
-				particle.position.set( 0, 0, 0 );
-				particle.scale.x = particle.scale.y = Math.random() * 8 + 4;
-				new TWEEN.Tween( particle )
-					.delay( delay )
-					.to( {}, 10000 )
-					.onComplete( initParticle )
-					.start();
-				new TWEEN.Tween( particle.position )
-					.delay( delay )
-					.to( { x: Math.random() * 4000 - 2000, y: -(Math.random() * 1000 - 500), z: Math.random() * 4000 - 2000 }, 10000 )
-					.start();
-				new TWEEN.Tween( particle.scale )
-					.delay( delay )
-					.to( { x: 0.01, y: 0.01 }, 10000 )
-					.start();
-      }
-      
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
-				stats = new Stats();
-				document.body.appendChild( stats.dom );
+  function initParticle(particle, delay) {
+    var particle = this instanceof THREE.Sprite ? this : particle;
+    var delay = delay !== undefined ? delay : 0;
+    particle.position.set(0, 100, 500);
+    particle.scale.x = particle.scale.y = Math.random() * 8 + 4;
+    new TWEEN.Tween(particle)
+      .delay(delay)
+      .to({}, 10000)
+      .onComplete(initParticle)
+      .start();
+    new TWEEN.Tween(particle.position)
+      .delay(delay)
+      .to({ x: Math.random() * 4000 - 2000, y: -(Math.random() * 1000 - 500), z: Math.random() * 4000 - 2000 }, 10000)
+      .start();
+    new TWEEN.Tween(particle.scale)
+      .delay(delay)
+      .to({ x: 0.01, y: 0.01 }, 10000)
+      .start();
+  }
 
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+  stats = new Stats();
+  document.body.appendChild(stats.dom);
+
+
+  // Earth
+  group = new THREE.Group();
+  scene.add(group);
+  console.log("EARTH", group)
+  // earth
+  var earthLoader = new THREE.TextureLoader();
+  earthLoader.load('obj/land_ocean_ice_cloud_2048.jpg', function (texture) {
+    var geometry = new THREE.SphereGeometry(200, 20, 20);
+    var material = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
+    var mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+  });
+  group.position.set(700, -250, -750)
+  group.scale.set(1.2, 1.2, 1.2)
 
   // LIGTHS
 
@@ -135,7 +151,7 @@
   camera.add(pointLight)
   scene.add(camera)
 
-  var drumsLight = new THREE.SpotLight(0xff0000, 1, 100, 3, 0, 0.5);
+  var drumsLight = new THREE.SpotLight(0xff0000, 0, 100, 3, 0, 0.5);
   drumsLight.position.set(0, 100, 0);
   drumsLight.castShadow = true;
   drumsLight.shadow.mapSize.width = 1024;
@@ -146,7 +162,7 @@
   console.log("DRUMSLIGHT", drumsLight);
   scene.add(drumsLight);
 
-  var guitarLight = new THREE.SpotLight(0xffffff, 1, 85, 3, 0, 0.5);
+  var guitarLight = new THREE.SpotLight(0xffffff, 0, 85, 3, 0, 0.5);
   guitarLight.position.set(86, 100, 78);
   guitarLight.castShadow = true;
   guitarLight.shadow.mapSize.width = 1024;
@@ -157,7 +173,7 @@
   console.log("GUITARLIGHTS", guitarLight);
   scene.add(guitarLight);
 
-  var bassLight = new THREE.SpotLight(0xffffff, 1, 50, 3, 0, 0.5);
+  var bassLight = new THREE.SpotLight(0xffffff, 0, 50, 3, 0, 0.5);
   bassLight.position.set(0, 52, 86);
   bassLight.castShadow = true;
   bassLight.shadow.mapSize.width = 1024;
@@ -168,7 +184,7 @@
   console.log("BASSLIGHT", bassLight);
   scene.add(bassLight);
 
-  var pianoLight = new THREE.SpotLight(0xffffff, 0.8, 77, 3, 0, 0.5);
+  var pianoLight = new THREE.SpotLight(0xffffff, 0, 77, 3, 0, 0.5);
   pianoLight.position.set(-75, 90, 90);
   pianoLight.castShadow = true;
   pianoLight.shadow.mapSize.width = 1024;
@@ -179,7 +195,7 @@
   console.log("PIANOLIGHTS", pianoLight);
   scene.add(pianoLight);
 
-  var micLight = new THREE.SpotLight(0xffffff, 1, 52, 3, 0, 0.5);
+  var micLight = new THREE.SpotLight(0xffffff, 0, 52, 3, 0, 0.5);
   micLight.position.set(10, 70, 130);
   micLight.castShadow = true;
   micLight.shadow.mapSize.width = 1024;
@@ -220,7 +236,7 @@
 
   let textureScene = textureLoader.load('obj/space.jpg');
 
-  let textureName = textureLoader.load('obj/name.png'); 
+  let textureName = textureLoader.load('obj/name.png');
 
   scene.background = textureScene;
 
@@ -268,6 +284,17 @@
     onProgress,
     onError
   )
+
+  let NumX = -300
+  for (let i = 0; i < 10; i++) {
+    let NumY = (Math.random() * (150 - (80)) + 80)
+    let NumZ = (Math.random() * (150 - (-50)) + -50)
+    var geometry = new THREE.SphereGeometry(20, 20, 20);
+    var material = new THREE.MeshNormalMaterial({ wireframe: true });
+    var extraSound = new THREE.Mesh(geometry, material);
+    extraSound.position.set(NumX += 50, NumY, NumZ)
+    scene.add(extraSound);
+  }
 
   //MUSIC CONTROLS
   let pianoGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -414,20 +441,20 @@
 
   let started = false;
   const startSounds = () => {
-      if (!started) {
-        started = true;
-        audioMic.play()
-        audioBass.play()
-        audioGuitar.play()
-        audioPiano.play()
-        audioDrums.play()
-        for ( var i = 0; i < 500; i++ ) {
-					particle = new THREE.Sprite( material );
-					initParticle( particle, i * 10 );
-					scene.add( particle );
-				}
-        console.log("SOUNDS STARTED")
+    if (!started) {
+      started = true;
+      audioMic.play()
+      audioBass.play()
+      audioGuitar.play()
+      audioPiano.play()
+      audioDrums.play()
+      for (var i = 0; i < 500; i++) {
+        particle = new THREE.Sprite(material);
+        initParticle(particle, i * 10);
+        scene.add(particle);
       }
+      console.log("SOUNDS STARTED")
+    }
   }
 
   const animate = function () {
@@ -438,8 +465,10 @@
     stats.update();
     TWEEN.update();
     renderer.render(scene, camera);
+    group.rotation.y -= 0.004;
   };
 
   animate();
 </script>
+
 </html>
