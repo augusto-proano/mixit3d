@@ -61,7 +61,7 @@
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
-  camera.position.set(0, 400, 400);
+  camera.position.set(0, 600, 1000);
   console.log("CAMERA", camera)
 
   const renderer = new THREE.WebGLRenderer();
@@ -80,62 +80,70 @@
   controls.minDistance = 1;
   controls.maxDistance = 1500
 
-  	var material = new THREE.SpriteMaterial( {
-					map: new THREE.CanvasTexture( generateSprite() ),
-					blending: THREE.AdditiveBlending
-				} );
+  var material = new THREE.SpriteMaterial({
+    map: new THREE.CanvasTexture(generateSprite()),
+    blending: THREE.AdditiveBlending
+  });
 
-			function generateSprite() {
-				var canvas = document.createElement( 'canvas' );
-				canvas.width = 16;
-        canvas.height = 16;
-				var context = canvas.getContext( '2d' );
-				var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
-				gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
-				gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
-				gradient.addColorStop( 0.4, 'rgba(0,0,64,1)' );
-				gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
-				context.fillStyle = gradient;
-				context.fillRect( 0, 0, canvas.width, canvas.height );
-				return canvas;
-			}
+  //**********************************************************************
+  //  AUDIO VISUALIZER TRY
+  //**********************************************************************
 
-      function initParticle( particle, delay ) {
-				var particle = this instanceof THREE.Sprite ? this : particle;
-				var delay = delay !== undefined ? delay : 0;
-				particle.position.set( 0, 0, 0 );
-				particle.scale.x = particle.scale.y = Math.random() * 8 + 4;
-				new TWEEN.Tween( particle )
-					.delay( delay )
-					.to( {}, 10000 )
-					.onComplete( initParticle )
-					.start();
-				new TWEEN.Tween( particle.position )
-					.delay( delay )
-					.to( { x: Math.random() * 4000 - 2000, y: -(Math.random() * 1000 - 500), z: Math.random() * 4000 - 2000 }, 10000 )
-					.start();
-				new TWEEN.Tween( particle.scale )
-					.delay( delay )
-					.to( { x: 0.01, y: 0.01 }, 10000 )
-					.start();
-      }
-      
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
-				stats = new Stats();
-				document.body.appendChild( stats.dom );
+  
+
+  //***********************************************************************
+
+  function generateSprite() {
+    var canvas = document.createElement('canvas');
+    canvas.width = 16;
+    canvas.height = 16;
+    var context = canvas.getContext('2d');
+    var gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+    gradient.addColorStop(0, 'rgba(255,255,255,1)');
+    gradient.addColorStop(0.2, 'rgba(0,255,255,1)');
+    gradient.addColorStop(0.4, 'rgba(0,0,64,1)');
+    gradient.addColorStop(1, 'rgba(0,0,0,1)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    return canvas;
+  }
+
+  function initParticle(particle, delay) {
+    var particle = this instanceof THREE.Sprite ? this : particle;
+    var delay = delay !== undefined ? delay : 0;
+    particle.position.set(0, 0, 0);
+    particle.scale.x = particle.scale.y = Math.random() * 8 + 4;
+    new TWEEN.Tween(particle)
+      .delay(delay)
+      .to({}, 10000)
+      .onComplete(initParticle)
+      .start();
+    new TWEEN.Tween(particle.position)
+      .delay(delay)
+      .to({ x: Math.random() * 4000 - 2000, y: -(Math.random() * 1000 - 500), z: Math.random() * 4000 - 2000 }, 10000)
+      .start();
+    new TWEEN.Tween(particle.scale)
+      .delay(delay)
+      .to({ x: 0.01, y: 0.01 }, 10000)
+      .start();
+  }
+
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+  stats = new Stats();
+  document.body.appendChild(stats.dom);
 
 
   // LIGTHS
 
-  // let ambientLight = new THREE.AmbientLight(0xffffff, 0.1)
+  // let ambientLight = new THREE.AmbientLight(0xffffff, 0.)
   // scene.add(ambientLight)
   let pointLight = new THREE.PointLight(0xffffff, 0.8)
   camera.add(pointLight)
   scene.add(camera)
 
-  var drumsLight = new THREE.SpotLight(0xff0000, 1, 100, 3, 0, 0.5);
+  var drumsLight = new THREE.SpotLight(0xff0000, 0, 100, 3, 0, 0.5);
   drumsLight.position.set(0, 100, 0);
   drumsLight.castShadow = true;
   drumsLight.shadow.mapSize.width = 1024;
@@ -146,7 +154,7 @@
   console.log("DRUMSLIGHT", drumsLight);
   scene.add(drumsLight);
 
-  var guitarLight = new THREE.SpotLight(0xffffff, 1, 85, 3, 0, 0.5);
+  var guitarLight = new THREE.SpotLight(0xff00ff, 0, 85, 3, 0, 0.5);
   guitarLight.position.set(86, 100, 78);
   guitarLight.castShadow = true;
   guitarLight.shadow.mapSize.width = 1024;
@@ -157,7 +165,7 @@
   console.log("GUITARLIGHTS", guitarLight);
   scene.add(guitarLight);
 
-  var bassLight = new THREE.SpotLight(0xffffff, 1, 50, 3, 0, 0.5);
+  var bassLight = new THREE.SpotLight(0x00ff00, 0, 50, 3, 0, 0.5);
   bassLight.position.set(0, 52, 86);
   bassLight.castShadow = true;
   bassLight.shadow.mapSize.width = 1024;
@@ -168,7 +176,7 @@
   console.log("BASSLIGHT", bassLight);
   scene.add(bassLight);
 
-  var pianoLight = new THREE.SpotLight(0xffffff, 0.8, 77, 3, 0, 0.5);
+  var pianoLight = new THREE.SpotLight(0x0000ff, 0, 77, 3, 0, 0.5);
   pianoLight.position.set(-75, 90, 90);
   pianoLight.castShadow = true;
   pianoLight.shadow.mapSize.width = 1024;
@@ -179,7 +187,7 @@
   console.log("PIANOLIGHTS", pianoLight);
   scene.add(pianoLight);
 
-  var micLight = new THREE.SpotLight(0xffffff, 1, 52, 3, 0, 0.5);
+  var micLight = new THREE.SpotLight(0xffffff, 0, 52, 3, 0, 0.5);
   micLight.position.set(10, 70, 130);
   micLight.castShadow = true;
   micLight.shadow.mapSize.width = 1024;
@@ -215,12 +223,13 @@
     console.log(item, loaded, total)
   }
   let textureLoader = new THREE.TextureLoader(manager)
-  // let texture = textureLoader.load('obj/texture3.jpg')  
-  let texture = textureLoader.load('obj/stage7.png')
+
+  //white stage with color lights
+  let texture = textureLoader.load('obj/stage4.png')
 
   let textureScene = textureLoader.load('obj/space.jpg');
 
-  let textureName = textureLoader.load('obj/name.png'); 
+  let textureName = textureLoader.load('obj/name.jpg');
 
   scene.background = textureScene;
 
@@ -257,7 +266,7 @@
     function (object) {
       object.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
-          child.material.map = texture
+          child.material.map = textureName
         }
       })
       console.log("NAME", object)
@@ -312,6 +321,7 @@
   scene.add(mic);
   console.log("MIC", mic);
 
+
   //ON CLICK EVENTS
   let onPiano = false;
   let audioPiano = new Audio('sounds/piano2128bpm7s.wav')
@@ -321,19 +331,29 @@
   audioPiano.playbackRate = 1;
   console.log("PIANO AUDIO", audioPiano)
 
+  audioPiano.muted = false;
+
   domEvents.addEventListener(piano, 'click', event => {
     if (!onPiano) {
       startSounds()
       audioPiano.muted = false;
-      pianoLight.intensity = 3;
+      pianoLight.intensity = 2.5;
       onPiano = true
     }
     else {
       audioPiano.muted = true;
-      pianoLight.intensity = 0.8;
+      pianoLight.intensity = 0;
       onPiano = false;
     }
   })
+
+  let introPlayed = false;
+  let welcomeIntro = new Audio('sounds/welcomeIntro.wav')
+  if (!introPlayed) {
+    welcomeIntro.play();
+    introPlayed = true;
+  }
+
 
   let onDrums = false;
   let audioDrums = new Audio('sounds/drum128bpm7s.wav')
@@ -344,12 +364,12 @@
     if (!onDrums) {
       startSounds()
       audioDrums.muted = false;
-      drumsLight.intensity = 4;
+      drumsLight.intensity = 2.5;
       onDrums = true
     }
     else {
       audioDrums.muted = true;
-      drumsLight.intensity = 1;
+      drumsLight.intensity = 0;
       onDrums = false;
     }
   })
@@ -363,12 +383,12 @@
     if (!onGuitar) {
       startSounds()
       audioGuitar.muted = false
-      guitarLight.intensity = 3;
+      guitarLight.intensity = 2.5;
       onGuitar = true
     }
     else {
       audioGuitar.muted = true
-      guitarLight.intensity = 1;
+      guitarLight.intensity = 0;
       onGuitar = false;
     }
   })
@@ -382,12 +402,12 @@
     if (!onBass) {
       startSounds()
       audioBass.muted = false;
-      bassLight.intensity = 5;
+      bassLight.intensity = 2.5;
       onBass = true
     }
     else {
       audioBass.muted = true;
-      bassLight.intensity = 1;
+      bassLight.intensity = 0;
       onBass = false;
     }
   })
@@ -402,33 +422,36 @@
     if (!onMic) {
       startSounds()
       audioMic.muted = false;
-      micLight.intensity = 4;
+      micLight.intensity = 2.5;
       onMic = true;
     }
     else {
       audioMic.muted = true;
-      micLight.intensity = 1;
+      micLight.intensity = 0;
       onMic = false;
     }
   })
 
   let started = false;
   const startSounds = () => {
-      if (!started) {
-        started = true;
-        audioMic.play()
-        audioBass.play()
-        audioGuitar.play()
-        audioPiano.play()
-        audioDrums.play()
-        for ( var i = 0; i < 500; i++ ) {
-					particle = new THREE.Sprite( material );
-					initParticle( particle, i * 10 );
-					scene.add( particle );
-				}
-        console.log("SOUNDS STARTED")
+
+    if (!started) {
+      started = true;
+      audioMic.play()
+      audioBass.play()
+      audioGuitar.play()
+      audioPiano.play()
+      audioDrums.play()
+      for (var i = 0; i < 500; i++) {
+        particle = new THREE.Sprite(material);
+        initParticle(particle, i * 10);
+        scene.add(particle);
       }
+      console.log("SOUNDS STARTED")
+    }
   }
+
+  //
 
   const animate = function () {
     requestAnimationFrame(animate);
@@ -442,4 +465,5 @@
 
   animate();
 </script>
+
 </html>
