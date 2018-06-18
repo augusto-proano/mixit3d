@@ -241,7 +241,7 @@
   let textureLoader = new THREE.TextureLoader(manager)
 
   //white stage with color lights
-  let texture = textureLoader.load('obj/stage4.png')
+  let texture = textureLoader.load('obj/stage7.png')
 
   let textureScene = textureLoader.load('obj/space.jpg');
 
@@ -390,13 +390,11 @@
   audioPiano.playbackRate = 1;
   console.log("PIANO AUDIO", audioPiano)
 
-  audioPiano.muted = false;
-
   domEvents.addEventListener(piano, 'click', event => {
     if (!onPiano) {
       startSounds()
       audioPiano.muted = false;
-      pianoLight.intensity = 2.5;
+      pianoLight.intensity = 3;
       onPiano = true
     }
     else {
@@ -423,12 +421,12 @@
     if (!onDrums) {
       startSounds()
       audioDrums.muted = false;
-      drumsLight.intensity = 2.5;
+      drumsLight.intensity = 3;
       onDrums = true
     }
     else {
       audioDrums.muted = true;
-      drumsLight.intensity = 0;
+      drumsLight.intensity = 1;
       onDrums = false;
     }
   })
@@ -442,7 +440,7 @@
     if (!onGuitar) {
       startSounds()
       audioGuitar.muted = false
-      guitarLight.intensity = 2.5;
+      guitarLight.intensity = 3;
       onGuitar = true
     }
     else {
@@ -461,7 +459,7 @@
     if (!onBass) {
       startSounds()
       audioBass.muted = false;
-      bassLight.intensity = 2.5;
+      bassLight.intensity = 3;
       onBass = true
     }
     else {
