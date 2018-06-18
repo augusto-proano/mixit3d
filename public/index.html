@@ -62,7 +62,6 @@
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
   camera.position.set(0, 600, 1000);
-  console.log("CAMERA", camera)
 
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -132,7 +131,7 @@
 
       //create the geometry and set the initial position
       this.bars[i] = new THREE.Mesh(barGeometry, material);
-      this.bars[i].position.set(i - this.numberOfBars / 2, 100, -80);
+      this.bars[i].position.set(i - this.numberOfBars / 1.5, 100, -80);
       // this.bars[i].scale.set(1,1,1);
 
       //add the created bar to the scene
@@ -206,7 +205,6 @@
   //start the audio processing
   AudioVisualizer.prototype.start = function (buffer) {
 
-    console.log(this.audioContext);
     this.audioContext.decodeAudioData(buffer, decodeAudioDataSuccess, decodeAudioDataFailed);
     var that = this;
 
@@ -278,7 +276,6 @@
   // Earth
   group = new THREE.Group();
   scene.add(group);
-  console.log("EARTH", group)
   // earth
   var earthLoader = new THREE.TextureLoader();
   earthLoader.load('obj/land_ocean_ice_cloud_2048.jpg', function (texture) {
@@ -306,7 +303,6 @@
   drumsLight.shadow.camera.near = 500;
   drumsLight.shadow.camera.far = 4000;
   drumsLight.shadow.camera.fov = 30;
-  console.log("DRUMSLIGHT", drumsLight);
   scene.add(drumsLight);
 
   var guitarLight = new THREE.SpotLight(0xffffff, 0, 85, 3, 0, 0.5);
@@ -317,7 +313,6 @@
   guitarLight.shadow.camera.near = 500;
   guitarLight.shadow.camera.far = 4000;
   guitarLight.shadow.camera.fov = 30;
-  console.log("GUITARLIGHTS", guitarLight);
   scene.add(guitarLight);
 
   var bassLight = new THREE.SpotLight(0xffffff, 0, 50, 3, 0, 0.5);
@@ -328,7 +323,6 @@
   bassLight.shadow.camera.near = 500;
   bassLight.shadow.camera.far = 4000;
   bassLight.shadow.camera.fov = 30;
-  console.log("BASSLIGHT", bassLight);
   scene.add(bassLight);
 
   var pianoLight = new THREE.SpotLight(0xffffff, 0, 77, 3, 0, 0.5);
@@ -339,7 +333,6 @@
   pianoLight.shadow.camera.near = 500;
   pianoLight.shadow.camera.far = 4000;
   pianoLight.shadow.camera.fov = 30;
-  console.log("PIANOLIGHTS", pianoLight);
   scene.add(pianoLight);
 
   var micLight = new THREE.SpotLight(0xffffff, 0, 52, 3, 0, 0.5);
@@ -350,7 +343,6 @@
   micLight.shadow.camera.near = 500;
   micLight.shadow.camera.far = 4000;
   micLight.shadow.camera.fov = 30;
-  console.log("MICLIGHT", micLight);
   scene.add(micLight);
 
   //Event listener for onMouseMove
@@ -375,7 +367,7 @@
   //STAGE
   let manager = new THREE.LoadingManager()
   manager.onProgress = function (item, loaded, total) {
-    console.log(item, loaded, total)
+    // console.log(item, loaded, total)
   }
   let textureLoader = new THREE.TextureLoader(manager)
 
@@ -392,7 +384,6 @@
   let onProgress = function (xhr) {
     if (xhr.lengthComputable) {
       let percentComplete = xhr.loaded / xhr.total * 100
-      console.log(Math.round(percentComplete, 2) + '% downloaded')
     }
   }
   let onError = function (xhr) { }
@@ -405,7 +396,6 @@
           child.material.map = texture
         }
       })
-      console.log("STAGE", object)
       object.position.set(0, 0, 50)
       object.scale.set(.4, .4, .4)
       scene.add(object)
@@ -424,7 +414,6 @@
           child.material.map = textureName
         }
       })
-      console.log("NAME", object)
       object.position.set(0, 0, 0)
       object.scale.set(1000, 1000, 1000)
       scene.add(object)
@@ -443,7 +432,6 @@
     scene.add(xtraSoundsControlers[i]);
   }
 
-  console.log("XTRASOUNDS", xtraSoundsControlers)
  
   xtraSoundsControlers[0].position.set(-200, 150, -100)
   xtraSoundsControlers[0].scale.set(3, 3, 3)
@@ -483,7 +471,6 @@
   piano.position.set(-75, 45, 90)
   piano.scale.set(50, 30, 15)
   scene.add(piano);
-  console.log("PIANO", piano);
 
   let drumsGeometry = new THREE.BoxGeometry(1, 1, 1);
   let drumsMaterial = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0 });
@@ -491,7 +478,6 @@
   drums.position.set(0, 50, 0)
   drums.scale.set(50, 50, 50)
   scene.add(drums);
-  console.log("DRUMS", drums);
 
   let guitarGeometry = new THREE.BoxGeometry(1, 1, 1);
   let guitarMaterial = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0 });
@@ -500,7 +486,6 @@
   guitar.scale.set(10, 55, 10)
   guitar.rotation.x = 3;
   scene.add(guitar);
-  console.log("GUITAR", guitar);
 
   let bassGeometry = new THREE.BoxGeometry(1, 1, 1);
   let bassMaterial = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0 });
@@ -509,7 +494,6 @@
   bass.scale.set(10, 55, 10)
   bass.rotation.x = 3;
   scene.add(bass);
-  console.log("BASS", bass);
 
   let micGeometry = new THREE.BoxGeometry(1, 1, 1);
   let micMaterial = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0 });
@@ -517,7 +501,6 @@
   mic.position.set(10, 50, 130)
   mic.scale.set(10, 40, 10)
   scene.add(mic);
-  console.log("MIC", mic);
 
 
   //ON CLICK EVENTS
@@ -527,7 +510,6 @@
   audioPiano.loop = true;
   audioPiano.muted = true;
   audioPiano.playbackRate = 1;
-  console.log("PIANO AUDIO", audioPiano)
 
   domEvents.addEventListener(piano, 'click', event => {
     if (!onPiano) {
@@ -617,7 +599,6 @@
   audioMic.loop = true;
   audioMic.muted = true;
   audioMic.playbackRate = 1;
-  console.log("MIC AUDIO", audioMic)
   domEvents.addEventListener(mic, 'click', event => {
     if (!onMic) {
       startSounds()
@@ -648,7 +629,6 @@
         initParticle(particle, i * 10);
         scene.add(particle);
       }
-      console.log("SOUNDS STARTED")
     }
     if(!bufferStarted){
       bufferStarted = true;
@@ -661,7 +641,6 @@
     if (!onMic && !onDrums && !onGuitar && !onBass && !onMic && !onPiano && bufferStarted) {
       visualizer.sourceBuffer.stop(0);
       bufferStarted = false;
-      console.log("BUFFER STOPPED")
     }
   }
 
