@@ -89,7 +89,146 @@
   //  AUDIO VISUALIZER TRY
   //**********************************************************************
 
-  
+  var visualizer = new AudioVisualizer();
+  const executeVisualizer = () => {
+    visualizer.createBars();
+    visualizer.setupAudioProcessing();
+    visualizer.getAudio();
+    visualizer.start();
+  }
+
+  function AudioVisualizer() {
+
+    //constants
+    this.numberOfBars = 64;
+
+    //bars
+    this.bars = new Array();
+
+    //audio
+    this.javascriptNode;
+    this.audioContext;
+    this.sourceBuffer;
+    this.analyser;
+  }
+
+
+  //create the bars required to show the visualization
+  AudioVisualizer.prototype.createBars = function () {
+
+    //iterate and create bars
+    for (var i = 0; i < this.numberOfBars; i++) {
+
+      //create a bar
+      var barGeometry = new THREE.BoxGeometry(3, 2, 3);
+
+      //create a material
+      var material = new THREE.MeshPhongMaterial({
+        color: this.getRandomColor(),
+        ambient: 0x808080,
+        specular: 0xffffff
+      });
+
+      //create the geometry and set the initial position
+      this.bars[i] = new THREE.Mesh(barGeometry, material);
+      this.bars[i].position.set(i - this.numberOfBars / 2, 100, -80);
+      // this.bars[i].scale.set(1,1,1);
+
+      //add the created bar to the scene
+      scene.add(this.bars[i]);
+    }
+  };
+
+  AudioVisualizer.prototype.setupAudioProcessing = function () {
+    //get the audio context
+    this.audioContext = new AudioContext();
+
+    //create the javascript node
+    this.javascriptNode = this.audioContext.createScriptProcessor(2048, 1, 1);
+    this.javascriptNode.connect(this.audioContext.destination);
+
+    //create the source buffer
+    this.sourceBuffer = this.audioContext.createBufferSource();
+    this.sourceBuffer.loop = true;
+
+    //create the analyser node
+    this.analyser = this.audioContext.createAnalyser();
+    this.analyser.smoothingTimeConstant = 0.3;
+    this.analyser.fftSize = 512;
+
+    //connect source to analyser
+    this.sourceBuffer.connect(this.analyser);
+
+    //analyser to speakers
+    this.analyser.connect(this.javascriptNode);
+
+    //connect source to analyser
+    this.sourceBuffer.connect(this.audioContext.destination);
+
+    var that = this;
+
+    //this is where we animates the bars
+    this.javascriptNode.onaudioprocess = function () {
+
+      // get the average for the first channel
+      var array = new Uint8Array(that.analyser.frequencyBinCount);
+      that.analyser.getByteFrequencyData(array);
+
+      //render the scene and update controls
+      renderer.render(scene, camera);
+      controls.update();
+
+      var step = Math.round(array.length / visualizer.numberOfBars);
+
+      //Iterate through the bars and scale the z axis
+      for (var i = 0; i < visualizer.numberOfBars; i++) {
+        var value = array[i * step] / 4;
+        value = value < 1 ? 1 : value;
+        visualizer.bars[i].scale.y = value;
+      }
+    }
+
+  };
+
+  //getAudio
+  AudioVisualizer.prototype.getAudio = function () {
+    var request = new XMLHttpRequest();
+    request.open("GET", "sounds/piano2128bpm7sTest.wav", true);
+    request.responseType = "arraybuffer";
+    request.send();
+    var that = this;
+    request.onload = function () {
+      that.start(request.response);
+    }
+  };
+
+  //start the audio processing
+  AudioVisualizer.prototype.start = function (buffer) {
+
+    console.log(this.audioContext);
+    this.audioContext.decodeAudioData(buffer, decodeAudioDataSuccess, decodeAudioDataFailed);
+    var that = this;
+
+    function decodeAudioDataSuccess(decodedBuffer) {
+      that.sourceBuffer.buffer = decodedBuffer
+      that.sourceBuffer.start(0);
+    }
+
+    function decodeAudioDataFailed() {
+      debugger
+    }
+  };
+
+  //util method to get random colors to make stuff interesting
+  AudioVisualizer.prototype.getRandomColor = function () {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
 
   //***********************************************************************
 
@@ -336,7 +475,7 @@
   domEvents.addEventListener(piano, 'click', event => {
     if (!onPiano) {
       startSounds()
-      audioPiano.muted = false;
+      // audioPiano.muted = false;
       pianoLight.intensity = 2.5;
       onPiano = true
     }
@@ -344,6 +483,7 @@
       audioPiano.muted = true;
       pianoLight.intensity = 0;
       onPiano = false;
+      checkSounds();
     }
   })
 
@@ -371,6 +511,7 @@
       audioDrums.muted = true;
       drumsLight.intensity = 0;
       onDrums = false;
+      checkSounds();
     }
   })
 
@@ -390,6 +531,7 @@
       audioGuitar.muted = true
       guitarLight.intensity = 0;
       onGuitar = false;
+      checkSounds();
     }
   })
 
@@ -409,6 +551,7 @@
       audioBass.muted = true;
       bassLight.intensity = 0;
       onBass = false;
+      checkSounds();
     }
   })
 
@@ -429,10 +572,12 @@
       audioMic.muted = true;
       micLight.intensity = 0;
       onMic = false;
+      checkSounds();
     }
   })
 
   let started = false;
+  let bufferStarted = false;
   const startSounds = () => {
 
     if (!started) {
@@ -440,7 +585,7 @@
       audioMic.play()
       audioBass.play()
       audioGuitar.play()
-      audioPiano.play()
+      // audioPiano.play()
       audioDrums.play()
       for (var i = 0; i < 500; i++) {
         particle = new THREE.Sprite(material);
@@ -448,6 +593,19 @@
         scene.add(particle);
       }
       console.log("SOUNDS STARTED")
+    }
+    if(!bufferStarted){
+      bufferStarted = true;
+      executeVisualizer();
+    }
+  }
+
+  const checkSounds = () => {
+
+    if (!onMic && !onDrums && !onGuitar && !onBass && !onMic && !onPiano && bufferStarted) {
+      visualizer.sourceBuffer.stop(0);
+      bufferStarted = false;
+      console.log("BUFFER STOPPED")
     }
   }
 

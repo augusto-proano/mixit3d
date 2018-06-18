@@ -2,6 +2,7 @@ var visualizer = new AudioVisualizer();
 const executeVisualizer = () => {
     visualizer.createBars();
     visualizer.setupAudioProcessing();
+    visualizer.getAudio();
     visualizer.start();
 }
 
@@ -141,9 +142,9 @@ AudioVisualizer.prototype.setupAudioProcessing = function () {
 
         //render the scene and update controls
 
-        visualizer.renderer.render(visualizer.scene, visualizer.camera);
+        renderer.render(scene, camera);
 
-        visualizer.controls.update();
+        controls.update();
 
 
 
@@ -170,10 +171,32 @@ AudioVisualizer.prototype.setupAudioProcessing = function () {
 };
 
 
+//getAudio
+AudioVisualizer.prototype.getAudio = function () {
+
+    var request = new XMLHttpRequest();
+
+    request.open("GET", "sounds/piano.wav", true);
+
+    request.responseType = "arraybuffer";
+
+    request.send();
+
+    var that = this;
+
+    request.onload = function () {
+
+        that.start(request.response);
+
+    }
+
+};
+
 //start the audio processing
 
 AudioVisualizer.prototype.start = function (buffer) {
 
+    console.log(audioContext);
     this.audioContext.decodeAudioData(buffer, decodeAudioDataSuccess, decodeAudioDataFailed);
 
     var that = this;
